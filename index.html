@@ -69,19 +69,28 @@
             <p class="text-xs text-teal-100" id="sub-header-text">スプレッドシート連携システム</p>
         </div>
 
-        <!-- 教科タブ切り替え -->
-        <div class="bg-gray-50 border-b border-gray-200 px-4 py-2 flex gap-2 overflow-x-auto no-scrollbar flex-shrink-0">
-            <button onclick="switchTab('数Ⅰ')" id="tab-数Ⅰ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-teal-600 text-white shadow-sm">
+        <!-- 教科タブ切り替え（7教科横スクロール対応） -->
+        <div class="bg-gray-50 border-b border-gray-200 px-4 py-2.5 flex gap-2 overflow-x-auto no-scrollbar flex-shrink-0">
+            <button onclick="switchTab('数Ⅰ')" id="tab-数Ⅰ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-teal-600 text-white shadow-sm whitespace-nowrap">
                 数Ⅰ
             </button>
-            <button onclick="switchTab('数A')" id="tab-数A" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100">
-                数A
-            </button>
-            <button onclick="switchTab('数Ⅱ')" id="tab-数Ⅱ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100">
+            <button onclick="switchTab('数Ⅱ')" id="tab-数Ⅱ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">
                 数Ⅱ
             </button>
-            <button onclick="switchTab('数C')" id="tab-数C" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100">
+            <button onclick="switchTab('数Ⅲ')" id="tab-数Ⅲ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">
+                数Ⅲ
+            </button>
+            <button onclick="switchTab('数A')" id="tab-数A" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">
+                数A
+            </button>
+            <button onclick="switchTab('数B')" id="tab-数B" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">
+                数B
+            </button>
+            <button onclick="switchTab('数C')" id="tab-数C" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">
                 数C
+            </button>
+            <button onclick="switchTab('基礎数')" id="tab-基礎数" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">
+                基礎数
             </button>
         </div>
 
@@ -155,7 +164,7 @@
         const API_KEY_STORAGE = "MATH_APP_GAS_URL";
         let GAS_API_URL = localStorage.getItem(API_KEY_STORAGE) || "";
 
-        // 本物のデータ連携がない時用のデモデータ（振り返りプリントなし版）
+        // 7教科に対応したデモ用ダミーデータ（スプシ未連携用）
         const demoData = {
             "数Ⅰ": [
                 { id: "1", exam_range: "1中間", title: "命題・条件・p⇒q", test_number: "なし", task_name: null, test_create: true, test_print: false, notebook: false, task_check: false },
@@ -163,23 +172,33 @@
                 { id: "3", exam_range: "1中間", title: "逆・裏・対偶・対偶の真偽", test_number: "なし", task_name: null, test_create: true, test_print: false, notebook: false, task_check: false },
                 { id: "4", exam_range: "1期末", title: "2次関数の最大・最小", test_number: "24", task_name: null, test_create: true, test_print: true, notebook: true, task_check: false }
             ],
-            "数A": [
-                { id: "1", exam_range: "1中間", title: "集合と要素・集合の表し方", test_number: "1", task_name: null, test_create: true, test_print: true, notebook: true, task_check: false },
-                { id: "2", exam_range: "1中間", title: "部分集合", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: true, task_check: false },
-                { id: "3", exam_range: "1期末", title: "組合せの総数", test_number: "なし", task_name: "組合せ確認課題", test_create: true, test_print: true, notebook: true, task_check: false },
-                { id: "4", exam_range: "1期末", title: "同じものを含む順列", test_number: "なし", task_name: "並べ替え応用課題", test_create: true, test_print: true, notebook: true, task_check: false }
-            ],
             "数Ⅱ": [
                 { id: "1", exam_range: "1中間", title: "一般角・動径", test_number: "1", task_name: null, test_create: true, test_print: true, notebook: false, task_check: false },
                 { id: "2", exam_range: "1中間", title: "弧度法", test_number: "2", task_name: null, test_create: true, test_print: true, notebook: false, task_check: false },
                 { id: "3", exam_range: "1中間", title: "弧度法と扇形", test_number: "3", task_name: null, test_create: true, test_print: true, notebook: false, task_check: false },
-                { id: "4", exam_range: "1期末", title: "三角関数", test_number: "4", task_name: "課題①", test_create: true, test_print: true, notebook: true, task_check: false },
-                { id: "5", exam_range: "1期末", title: "三角関数で成り立つ等式", test_number: "なし", task_name: "等式課題", test_create: false, test_print: false, notebook: true, task_check: false },
-                { id: "6", exam_range: "2中間", title: "正弦余弦の加法定理", test_number: "なし", task_name: "加法定理応用課題", test_create: false, test_print: false, notebook: false, task_check: false }
+                { id: "4", exam_range: "1期末", title: "三角関数", test_number: "4", task_name: "課題①", test_create: true, test_print: true, notebook: true, task_check: false }
+            ],
+            "数Ⅲ": [
+                { id: "1", exam_range: "1中間", title: "複素数平面と極形式", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false },
+                { id: "2", exam_range: "1中間", title: "ド・モアブルの定理", test_number: "2", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false },
+                { id: "3", exam_range: "1期末", title: "分数関数と無理関数", test_number: "なし", task_name: "関数演習課題", test_create: false, test_print: false, notebook: false, task_check: false }
+            ],
+            "数A": [
+                { id: "1", exam_range: "1中間", title: "集合と要素・集合の表し方", test_number: "1", task_name: null, test_create: true, test_print: true, notebook: true, task_check: false },
+                { id: "2", exam_range: "1中間", title: "部分集合", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: true, task_check: false },
+                { id: "3", exam_range: "1期末", title: "組合せの総数", test_number: "なし", task_name: "組合せ確認課題", test_create: true, test_print: true, notebook: true, task_check: false }
+            ],
+            "数B": [
+                { id: "1", exam_range: "1中間", title: "等差数列と等比数列", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false },
+                { id: "2", exam_range: "1中間", title: "シグマの計算", test_number: "2", task_name: "数列演習", test_create: false, test_print: false, notebook: false, task_check: false }
             ],
             "数C": [
-                { id: "1", exam_range: "1中間", title: "複素数平面", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false },
-                { id: "2", exam_range: "1期末", title: "極形式", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false }
+                { id: "1", exam_range: "1中間", title: "ベクトルとその演算", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false },
+                { id: "2", exam_range: "1期末", title: "ベクトルの内積", test_number: "2", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false }
+            ],
+            "基礎数": [
+                { id: "1", exam_range: "1中間", title: "整数の計算と割合", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false },
+                { id: "2", exam_range: "1中間", title: "一次方程式の基本", test_number: "1", task_name: "基礎プリント", test_create: false, test_print: false, notebook: false, task_check: false }
             ]
         };
 
@@ -314,8 +333,13 @@
             });
             
             const activeTab = document.getElementById(`tab-${tabName}`);
-            activeTab.classList.remove('bg-white', 'text-gray-600', 'border', 'border-gray-200');
-            activeTab.classList.add('bg-teal-600', 'text-white', 'shadow-sm');
+            if (activeTab) {
+                activeTab.classList.remove('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+                activeTab.classList.add('bg-teal-600', 'text-white', 'shadow-sm');
+                
+                // 選んだタブボタンがはみ出ている場合、自動で横スクロール位置を調整
+                activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
 
             document.getElementById('search-input').value = '';
             renderCards();
