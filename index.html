@@ -155,35 +155,35 @@
         const API_KEY_STORAGE = "MATH_APP_GAS_URL";
         let GAS_API_URL = localStorage.getItem(API_KEY_STORAGE) || "";
 
-        // 本物のデータ連携がない時用のデモデータ（お送りいただいた実際の進捗CSVに準拠）
+        // 本物のデータ連携がない時用のデモデータ（振り返りプリントなし版）
         const demoData = {
             "数Ⅰ": [
-                { id: "1", exam_range: "1中間", title: "命題・条件・p⇒q", test_number: "なし", task_name: null, test_create: true, test_print: false, notebook: false, review: false, task_check: false },
-                { id: "2", exam_range: "1中間", title: "必要条件・十分条件・条件の否定", test_number: "なし", task_name: null, test_create: true, test_print: true, notebook: false, review: false, task_check: false },
-                { id: "3", exam_range: "1中間", title: "逆・裏・対偶・対偶の真偽", test_number: "なし", task_name: null, test_create: true, test_print: false, notebook: false, review: true, task_check: false },
-                { id: "4", exam_range: "1期末", title: "2次関数の最大・最小", test_number: "24", task_name: null, test_create: true, test_print: true, notebook: true, review: true, task_check: false }
+                { id: "1", exam_range: "1中間", title: "命題・条件・p⇒q", test_number: "なし", task_name: null, test_create: true, test_print: false, notebook: false, task_check: false },
+                { id: "2", exam_range: "1中間", title: "必要条件・十分条件・条件の否定", test_number: "なし", task_name: null, test_create: true, test_print: true, notebook: false, task_check: false },
+                { id: "3", exam_range: "1中間", title: "逆・裏・対偶・対偶の真偽", test_number: "なし", task_name: null, test_create: true, test_print: false, notebook: false, task_check: false },
+                { id: "4", exam_range: "1期末", title: "2次関数の最大・最小", test_number: "24", task_name: null, test_create: true, test_print: true, notebook: true, task_check: false }
             ],
             "数A": [
-                { id: "1", exam_range: "1中間", title: "集合と要素・集合の表し方", test_number: "1", task_name: null, test_create: true, test_print: true, notebook: true, review: false, task_check: false },
-                { id: "2", exam_range: "1中間", title: "部分集合", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: true, review: false, task_check: false },
-                { id: "3", exam_range: "1期末", title: "組合せの総数", test_number: "なし", task_name: "組合せ確認課題", test_create: true, test_print: true, notebook: true, review: false, task_check: false },
-                { id: "4", exam_range: "1期末", title: "同じものを含む順列", test_number: "なし", task_name: "並べ替え応用課題", test_create: true, test_print: true, notebook: true, review: false, task_check: false }
+                { id: "1", exam_range: "1中間", title: "集合と要素・集合の表し方", test_number: "1", task_name: null, test_create: true, test_print: true, notebook: true, task_check: false },
+                { id: "2", exam_range: "1中間", title: "部分集合", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: true, task_check: false },
+                { id: "3", exam_range: "1期末", title: "組合せの総数", test_number: "なし", task_name: "組合せ確認課題", test_create: true, test_print: true, notebook: true, task_check: false },
+                { id: "4", exam_range: "1期末", title: "同じものを含む順列", test_number: "なし", task_name: "並べ替え応用課題", test_create: true, test_print: true, notebook: true, task_check: false }
             ],
             "数Ⅱ": [
-                { id: "1", exam_range: "1中間", title: "一般角・動径", test_number: "1", task_name: null, test_create: true, test_print: true, notebook: false, review: false, task_check: false },
-                { id: "2", exam_range: "1中間", title: "弧度法", test_number: "2", task_name: null, test_create: true, test_print: true, notebook: false, review: false, task_check: false },
-                { id: "3", exam_range: "1中間", title: "弧度法と扇形", test_number: "3", task_name: null, test_create: true, test_print: true, notebook: false, review: false, task_check: false },
-                { id: "4", exam_range: "1期末", title: "三角関数", test_number: "4", task_name: "課題①", test_create: true, test_print: true, notebook: true, review: false, task_check: false },
-                { id: "5", exam_range: "1期末", title: "三角関数で成り立つ等式", test_number: "なし", task_name: "等式課題", test_create: false, test_print: false, notebook: true, review: false, task_check: false },
-                { id: "6", exam_range: "2中間", title: "正弦余弦の加法定理", test_number: "なし", task_name: "加法定理応用課題", test_create: false, test_print: false, notebook: false, review: false, task_check: false }
+                { id: "1", exam_range: "1中間", title: "一般角・動径", test_number: "1", task_name: null, test_create: true, test_print: true, notebook: false, task_check: false },
+                { id: "2", exam_range: "1中間", title: "弧度法", test_number: "2", task_name: null, test_create: true, test_print: true, notebook: false, task_check: false },
+                { id: "3", exam_range: "1中間", title: "弧度法と扇形", test_number: "3", task_name: null, test_create: true, test_print: true, notebook: false, task_check: false },
+                { id: "4", exam_range: "1期末", title: "三角関数", test_number: "4", task_name: "課題①", test_create: true, test_print: true, notebook: true, task_check: false },
+                { id: "5", exam_range: "1期末", title: "三角関数で成り立つ等式", test_number: "なし", task_name: "等式課題", test_create: false, test_print: false, notebook: true, task_check: false },
+                { id: "6", exam_range: "2中間", title: "正弦余弦の加法定理", test_number: "なし", task_name: "加法定理応用課題", test_create: false, test_print: false, notebook: false, task_check: false }
             ],
             "数C": [
-                { id: "1", exam_range: "1中間", title: "複素数平面", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: false, review: false, task_check: false },
-                { id: "2", exam_range: "1期末", title: "極形式", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, review: false, task_check: false }
+                { id: "1", exam_range: "1中間", title: "複素数平面", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false },
+                { id: "2", exam_range: "1期末", title: "極形式", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false }
             ]
         };
 
-        let sheetData = {}; // 各シートごとのデータ配列
+        let sheetData = {};
         let isDemoMode = false;
         const openAccordions = new Set();
         let currentTab = '数Ⅰ';
@@ -194,21 +194,18 @@
             if (GAS_API_URL) {
                 reloadData();
             } else {
-                // API URLがない場合は、デモモードでアプリを起動
                 setupDemoMode();
             }
         };
 
-        // デモモードの設定
         function setupDemoMode() {
             isDemoMode = true;
-            sheetData = JSON.parse(JSON.stringify(demoData)); // ディープコピー
+            sheetData = JSON.parse(JSON.stringify(demoData));
             renderCards();
             updateSyncStatus();
             alertMessage("【デモモードで起動しました】\n接続設定からスプレッドシートのGAS URLを設定すると、本物のデータとリアルタイム連動します。まずはこのまま使いやすさを試してみてください！");
         }
 
-        // 同期ステータスバッジの更新
         function updateSyncStatus() {
             const status = document.getElementById('sync-status');
             const subHeader = document.getElementById('sub-header-text');
@@ -227,7 +224,6 @@
             }
         }
 
-        // メッセージ表示
         function alertMessage(msg) {
             document.getElementById('modal-text').innerText = msg;
             document.getElementById('custom-modal').classList.remove('hidden');
@@ -237,7 +233,6 @@
             document.getElementById('custom-modal').classList.add('hidden');
         }
 
-        // 設定画面を開く/閉じる
         function openConfig() {
             document.getElementById('api-url-input').value = isDemoMode ? "" : GAS_API_URL;
             document.getElementById('config-modal').classList.remove('hidden');
@@ -252,7 +247,6 @@
             closeConfig();
 
             if (!url) {
-                // URLを空欄にして保存した場合はデモモードへ
                 setupDemoMode();
                 return;
             }
@@ -268,7 +262,6 @@
             reloadData();
         }
 
-        // ローディングの表示切り替え
         function toggleLoading(show, text = "スプレッドシートと同期中...") {
             const overlay = document.getElementById('loading-overlay');
             document.getElementById('loading-text').innerText = text;
@@ -279,10 +272,8 @@
             }
         }
 
-        // データ読み込み（GETリクエスト）
         function reloadData() {
             if (isDemoMode) {
-                // デモモードなら初期データでリセット
                 sheetData = JSON.parse(JSON.stringify(demoData));
                 renderCards();
                 return;
@@ -313,7 +304,6 @@
                 });
         }
 
-        // タブ切り替え
         function switchTab(tabName) {
             currentTab = tabName;
             openAccordions.clear();
@@ -331,17 +321,253 @@
             renderCards();
         }
 
-        // 進捗メーター更新
+        // 進捗メーター更新（基本3タスク＋動的1タスクに設定変更）
         function updateProgressBar() {
             const list = sheetData[currentTab] || [];
             let totalItems = 0;
             let checkedItems = 0;
 
             list.forEach(item => {
-                totalItems += 4;
+                totalItems += 3; // 作成、印刷、ノート
                 if (item.test_create) checkedItems++;
                 if (item.test_print) checkedItems++;
                 if (item.notebook) checkedItems++;
-                if (item.review) checkedItems++;
 
                 if (item.task_name) {
+                    totalItems += 1;
+                    if (item.task_check) checkedItems++;
+                }
+            });
+
+            const percent = totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
+            
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercent = document.getElementById('progress-percent');
+            progressBar.style.width = `${percent}%`;
+            progressPercent.innerText = `${percent}%`;
+        }
+
+        function renderCards() {
+            const list = sheetData[currentTab] || [];
+            const container = document.getElementById('card-list');
+            container.innerHTML = '';
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-gray-400">
+                        <i data-lucide="info" class="w-8 h-8 mx-auto mb-2 text-gray-300"></i>
+                        シート「${currentTab}」にデータがありません。
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            list.forEach((item, index) => {
+                const activeProcessCount = item.task_name ? 4 : 3;
+                const checkedCount = [
+                    item.test_create, 
+                    item.test_print, 
+                    item.notebook, 
+                    (item.task_name ? item.task_check : null)
+                ].filter(Boolean).length;
+
+                let statusBadge = '';
+                if (checkedCount === activeProcessCount) {
+                    statusBadge = '<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-green-100 text-green-700">完了</span>';
+                } else if (checkedCount > 0) {
+                    statusBadge = `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-100 text-amber-700">準備中 (${checkedCount}/${activeProcessCount})</span>`;
+                } else {
+                    statusBadge = '<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-gray-100 text-gray-400">未着手</span>';
+                }
+
+                // 小テストバッジ
+                const testNumberText = item.test_number !== "なし" && item.test_number ? `小テスト #${item.test_number}` : "小テスト なし";
+                const testBadgeColor = item.test_number !== "なし" && item.test_number ? "bg-rose-50 text-rose-600 border border-rose-100" : "bg-gray-50 text-gray-400";
+                const testNumberBadge = `<span class="px-2 py-0.5 text-[10px] font-bold rounded-lg ${testBadgeColor} flex items-center gap-1"><i data-lucide="file-text" class="w-3 h-3"></i>${testNumberText}</span>`;
+
+                // 課題バッジ
+                const taskBadge = item.task_name ? `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center gap-1 mt-1"><i data-lucide="clipboard" class="w-2.5 h-2.5"></i>${item.task_name}</span>` : "";
+
+                // 考査範囲タグの色分け
+                let examTagColorClass = "bg-slate-100 text-slate-600 border-slate-200";
+                const examText = item.exam_range || "未定";
+                if (examText.includes("中間")) {
+                    examTagColorClass = "bg-sky-50 text-sky-700 border-sky-100";
+                } else if (examText.includes("期末")) {
+                    examTagColorClass = "bg-purple-50 text-purple-700 border-purple-100";
+                } else if (examText.includes("学年末")) {
+                    examTagColorClass = "bg-rose-50 text-rose-700 border-rose-100";
+                }
+
+                const isOpen = openAccordions.has(item.id);
+                const accordionClass = isOpen ? 'accordion-content open' : 'accordion-content';
+                const iconRotationStyle = isOpen ? 'transform: rotate(180deg);' : '';
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl shadow-sm border border-gray-200/80 overflow-hidden card-item transition hover:shadow-md flex";
+                card.dataset.title = item.title;
+                card.dataset.testnumber = item.test_number || "";
+                card.dataset.taskname = item.task_name || "";
+                card.dataset.examrange = examText;
+
+                card.innerHTML = `
+                    <!-- 左端：短い考査範囲タグ（1中間、1期末など） -->
+                    <div class="w-12 flex-shrink-0 flex items-center justify-center border-r text-[10px] font-bold p-1 text-center select-none ${examTagColorClass}">
+                        <span class="writing-mode-vertical">${examText}</span>
+                    </div>
+
+                    <!-- 右側：メインコンテンツ -->
+                    <div class="flex-grow flex flex-col">
+                        <!-- ヘッダー（タップ開閉） -->
+                        <div onclick="toggleAccordion('${item.id}')" class="p-3.5 flex justify-between items-start cursor-pointer hover:bg-gray-50/50 active:bg-gray-50 transition duration-150 select-none">
+                            <div class="flex-grow pr-2">
+                                <div class="flex items-center gap-1.5 mb-1">
+                                    <span class="text-[10px] font-bold text-gray-400">No.${item.id}</span>
+                                    ${statusBadge}
+                                </div>
+                                <h3 class="text-sm font-bold text-gray-800 leading-tight">${item.title}</h3>
+                                ${taskBadge}
+                            </div>
+                            
+                            <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
+                                ${testNumberBadge}
+                                <i id="icon-${item.id}" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-200" style="${iconRotationStyle}"></i>
+                            </div>
+                        </div>
+
+                        <!-- 折りたたみコンテンツ -->
+                        <div id="content-${item.id}" class="${accordionClass} bg-gray-50/50 border-t border-gray-100">
+                            <div class="p-4 space-y-3">
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">授業準備項目</p>
+                                
+                                <!-- 1. 小テスト作成 -->
+                                <div onclick="toggleAndSync(event, '${item.id}', 'test_create')" class="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-100 active:bg-teal-50 transition cursor-pointer select-none">
+                                    <span class="text-sm font-medium text-gray-700 flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+                                        小テスト 【作成】
+                                    </span>
+                                    <input type="checkbox" ${item.test_create ? 'checked' : ''} class="w-5 h-5 rounded-md border-gray-300 text-teal-600 focus:ring-teal-500 pointer-events-none">
+                                </div>
+
+                                <!-- 2. 小テスト印刷 -->
+                                <div onclick="toggleAndSync(event, '${item.id}', 'test_print')" class="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-100 active:bg-teal-50 transition cursor-pointer select-none">
+                                    <span class="text-sm font-medium text-gray-700 flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-orange-400"></span>
+                                        小テスト 【印刷】
+                                    </span>
+                                    <input type="checkbox" ${item.test_print ? 'checked' : ''} class="w-5 h-5 rounded-md border-gray-300 text-teal-600 focus:ring-teal-500 pointer-events-none">
+                                </div>
+
+                                <!-- 3. ノートをまとめる -->
+                                <div onclick="toggleAndSync(event, '${item.id}', 'notebook')" class="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-100 active:bg-teal-50 transition cursor-pointer select-none">
+                                    <span class="text-sm font-medium text-gray-700 flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-indigo-400"></span>
+                                        ノートをまとめる
+                                    </span>
+                                    <input type="checkbox" ${item.notebook ? 'checked' : ''} class="w-5 h-5 rounded-md border-gray-300 text-teal-600 focus:ring-teal-500 pointer-events-none">
+                                </div>
+
+                                <!-- 4. 課題内容チェック（課題がある日だけ自動出現） -->
+                                ${item.task_name ? `
+                                <div onclick="toggleAndSync(event, '${item.id}', 'task_check')" class="flex items-center justify-between p-3 bg-indigo-50 border border-indigo-100 rounded-xl active:bg-indigo-100 transition cursor-pointer select-none mt-2">
+                                    <span class="text-sm font-bold text-indigo-700 flex items-center gap-2">
+                                        <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+                                        提出課題 【${item.task_name}】
+                                    </span>
+                                    <input type="checkbox" ${item.task_check ? 'checked' : ''} class="w-5 h-5 rounded-md border-indigo-300 text-indigo-600 focus:ring-indigo-500 pointer-events-none">
+                                </div>
+                                ` : ''}
+
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            updateProgressBar();
+            lucide.createIcons();
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (openAccordions.has(id)) {
+                openAccordions.delete(id);
+                content.classList.remove('open');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                openAccordions.add(id);
+                content.classList.add('open');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function toggleAndSync(event, itemId, field) {
+            event.stopPropagation();
+            
+            const list = sheetData[currentTab];
+            const target = list.find(item => String(item.id) === String(itemId));
+            if (!target) return;
+
+            const oldValue = target[field];
+            const newValue = !oldValue;
+            target[field] = newValue;
+            renderCards();
+
+            if (isDemoMode) {
+                updateProgressBar();
+                return;
+            }
+
+            toggleLoading(true, "スプレッドシートを更新中...");
+
+            const payload = {
+                sheetName: currentTab,
+                id: itemId,
+                field: field,
+                value: newValue
+            };
+
+            fetch(GAS_API_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                toggleLoading(false);
+                updateProgressBar();
+            })
+            .catch(error => {
+                console.error("更新失敗:", error);
+                target[field] = oldValue;
+                renderCards();
+                toggleLoading(false);
+                alertMessage("同期に失敗しました。\n電波の良いところで再度お試しください。");
+            });
+        }
+
+        function filterCards() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const cards = document.querySelectorAll('.card-item');
+
+            cards.forEach(card => {
+                const title = card.dataset.title.toLowerCase();
+                const testNumber = card.dataset.testnumber.toLowerCase();
+                const taskName = card.dataset.taskname.toLowerCase();
+                const examRange = card.dataset.examrange.toLowerCase();
+                
+                if (title.includes(query) || testNumber.includes(query) || taskName.includes(query) || examRange.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
