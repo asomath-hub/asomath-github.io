@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学科 授業準備アプリ</title>
+    <!-- Tailwind CSS & Lucide Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans JP", sans-serif;
+            background-color: #f3f4f6;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.25s ease-out, padding 0.25s ease-out;
+        }
+        .accordion-content.open {
+            max-height: 500px;
+            transition: max-height 0.3s ease-in, padding 0.3s ease-in;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* ロード用アニメーション */
+        .loader {
+            border-top-color: #0d9488;
+            -webkit-animation: spinner 1.5s linear infinite;
+            animation: spinner 1.5s linear infinite;
+        }
+        @-webkit-keyframes spinner {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="flex justify-center items-start min-h-screen p-0 sm:p-4">
+
+    <!-- スマホサイズコンテナ -->
+    <div class="w-full max-w-md bg-white sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-gray-200 relative" style="height: 100vh; max-height: 850px;">
+        
+        <!-- 通信中ローディングマスク -->
+        <div id="loading-overlay" class="hidden absolute inset-0 bg-white/70 flex flex-col justify-center items-center z-50">
+            <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+            <p class="text-sm font-bold text-teal-700" id="loading-text">スプレッドシートと同期中...</p>
+        </div>
+
+        <!-- ヘッダー -->
+        <div class="bg-gradient-to-r from-teal-600 to-emerald-600 text-white p-4 shadow-md flex-shrink-0">
+            <div class="flex justify-between items-center mb-2">
+                <h1 class="text-xl font-bold flex items-center gap-2">
+                    <i data-lucide="book-open" class="w-6 h-6"></i>
+                    数学科 授業準備
+                </h1>
+                <span class="text-xs px-2 py-1 rounded-full flex items-center gap-1" id="sync-status">
+                    <!-- JavaScriptで同期状態を動的に変更 -->
+                </span>
+            </div>
+            <p class="text-xs text-teal-100" id="sub-header-text">スプレッドシート連携システム</p>
+        </div>
+
+        <!-- 教科タブ切り替え -->
+        <div class="bg-gray-50 border-b border-gray-200 px-4 py-2 flex gap-2 overflow-x-auto no-scrollbar flex-shrink-0">
+            <button onclick="switchTab('数Ⅰ')" id="tab-数Ⅰ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-teal-600 text-white shadow-sm">
+                数Ⅰ
+            </button>
+            <button onclick="switchTab('数A')" id="tab-数A" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100">
+                数A
+            </button>
+            <button onclick="switchTab('数Ⅱ')" id="tab-数Ⅱ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100">
+                数Ⅱ
+            </button>
+            <button onclick="switchTab('数C')" id="tab-数C" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100">
+                数C
+            </button>
+        </div>
+
+        <!-- 検索 ＆ 進捗メーター -->
+        <div class="p-3 bg-white border-b border-gray-100 flex-shrink-0">
+            <!-- 進捗バー -->
+            <div class="mb-3">
+                <div class="flex justify-between text-xs text-gray-500 mb-1">
+                    <span>選択中の教科の全体進捗</span>
+                    <span id="progress-percent" class="font-bold text-teal-600">0%</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-gradient-to-r from-teal-500 to-emerald-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+            <!-- 検索窓 -->
+            <div class="relative">
+                <input type="text" id="search-input" oninput="filterCards()" placeholder="単元名、考査（1中間）、小テスト番号等で検索..." class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+                <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+            </div>
+        </div>
+
+        <!-- カード一覧表示エリア（縦スクロール） -->
+        <div id="card-list" class="flex-grow p-4 overflow-y-auto space-y-3 bg-gray-50">
+            <!-- JavaScriptでカードを配置 -->
+        </div>
+
+        <!-- 下部ナビゲーション -->
+        <div class="bg-white border-t border-gray-200 p-2 flex justify-around text-center flex-shrink-0">
+            <button onclick="reloadData()" class="flex flex-col items-center text-teal-600">
+                <i data-lucide="refresh-cw" class="w-6 h-6"></i>
+                <span class="text-[10px] mt-1 font-medium" id="refresh-btn-text">同期更新</span>
+            </button>
+            <button onclick="openConfig()" class="flex flex-col items-center text-gray-400 hover:text-gray-600">
+                <i data-lucide="settings" class="w-6 h-6"></i>
+                <span class="text-[10px] mt-1">接続設定</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 設定モーダル（API URL登録） -->
+    <div id="config-modal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl">
+            <h3 class="text-lg font-bold text-gray-800 mb-2 flex items-center gap-2">
+                <i data-lucide="settings" class="text-teal-600"></i>スプシ接続設定
+            </h3>
+            <p class="text-xs text-gray-500 mb-4">作成したGoogle Apps Script (GAS) の「ウェブアプリ URL」を貼り付けてスプレッドシートと連動させます。空欄で保存すると「デモモード」で動かせます。</p>
+            
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">GAS Web App URL</label>
+                <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500">
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeConfig()" class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-xl text-xs font-medium hover:bg-gray-200 transition">閉じる</button>
+                <button onclick="saveConfig()" class="flex-1 bg-teal-600 text-white py-2 rounded-xl text-xs font-medium hover:bg-teal-700 transition">保存して接続</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- カスタムダイアログ -->
+    <div id="custom-modal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-xs w-full p-6 text-center shadow-2xl">
+            <p id="modal-text" class="text-gray-700 text-sm mb-4 font-medium whitespace-pre-line leading-relaxed"></p>
+            <button onclick="closeModal()" class="w-full bg-teal-600 text-white py-2 rounded-xl text-sm font-medium hover:bg-teal-700 transition">閉じる</button>
+        </div>
+    </div>
+
+    <script>
+        // 設定情報の保存キー
+        const API_KEY_STORAGE = "MATH_APP_GAS_URL";
+        let GAS_API_URL = localStorage.getItem(API_KEY_STORAGE) || "";
+
+        // 本物のデータ連携がない時用のデモデータ（お送りいただいた実際の進捗CSVに準拠）
+        const demoData = {
+            "数Ⅰ": [
+                { id: "1", exam_range: "1中間", title: "命題・条件・p⇒q", test_number: "なし", task_name: null, test_create: true, test_print: false, notebook: false, review: false, task_check: false },
+                { id: "2", exam_range: "1中間", title: "必要条件・十分条件・条件の否定", test_number: "なし", task_name: null, test_create: true, test_print: true, notebook: false, review: false, task_check: false },
+                { id: "3", exam_range: "1中間", title: "逆・裏・対偶・対偶の真偽", test_number: "なし", task_name: null, test_create: true, test_print: false, notebook: false, review: true, task_check: false },
+                { id: "4", exam_range: "1期末", title: "2次関数の最大・最小", test_number: "24", task_name: null, test_create: true, test_print: true, notebook: true, review: true, task_check: false }
+            ],
+            "数A": [
+                { id: "1", exam_range: "1中間", title: "集合と要素・集合の表し方", test_number: "1", task_name: null, test_create: true, test_print: true, notebook: true, review: false, task_check: false },
+                { id: "2", exam_range: "1中間", title: "部分集合", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: true, review: false, task_check: false },
+                { id: "3", exam_range: "1期末", title: "組合せの総数", test_number: "なし", task_name: "組合せ確認課題", test_create: true, test_print: true, notebook: true, review: false, task_check: false },
+                { id: "4", exam_range: "1期末", title: "同じものを含む順列", test_number: "なし", task_name: "並べ替え応用課題", test_create: true, test_print: true, notebook: true, review: false, task_check: false }
+            ],
+            "数Ⅱ": [
+                { id: "1", exam_range: "1中間", title: "一般角・動径", test_number: "1", task_name: null, test_create: true, test_print: true, notebook: false, review: false, task_check: false },
+                { id: "2", exam_range: "1中間", title: "弧度法", test_number: "2", task_name: null, test_create: true, test_print: true, notebook: false, review: false, task_check: false },
+                { id: "3", exam_range: "1中間", title: "弧度法と扇形", test_number: "3", task_name: null, test_create: true, test_print: true, notebook: false, review: false, task_check: false },
+                { id: "4", exam_range: "1期末", title: "三角関数", test_number: "4", task_name: "課題①", test_create: true, test_print: true, notebook: true, review: false, task_check: false },
+                { id: "5", exam_range: "1期末", title: "三角関数で成り立つ等式", test_number: "なし", task_name: "等式課題", test_create: false, test_print: false, notebook: true, review: false, task_check: false },
+                { id: "6", exam_range: "2中間", title: "正弦余弦の加法定理", test_number: "なし", task_name: "加法定理応用課題", test_create: false, test_print: false, notebook: false, review: false, task_check: false }
+            ],
+            "数C": [
+                { id: "1", exam_range: "1中間", title: "複素数平面", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: false, review: false, task_check: false },
+                { id: "2", exam_range: "1期末", title: "極形式", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, review: false, task_check: false }
+            ]
+        };
+
+        let sheetData = {}; // 各シートごとのデータ配列
+        let isDemoMode = false;
+        const openAccordions = new Set();
+        let currentTab = '数Ⅰ';
+
+        window.onload = function() {
+            lucide.createIcons();
+            
+            if (GAS_API_URL) {
+                reloadData();
+            } else {
+                // API URLがない場合は、デモモードでアプリを起動
+                setupDemoMode();
+            }
+        };
+
+        // デモモードの設定
+        function setupDemoMode() {
+            isDemoMode = true;
+            sheetData = JSON.parse(JSON.stringify(demoData)); // ディープコピー
+            renderCards();
+            updateSyncStatus();
+            alertMessage("【デモモードで起動しました】\n接続設定からスプレッドシートのGAS URLを設定すると、本物のデータとリアルタイム連動します。まずはこのまま使いやすさを試してみてください！");
+        }
+
+        // 同期ステータスバッジの更新
+        function updateSyncStatus() {
+            const status = document.getElementById('sync-status');
+            const subHeader = document.getElementById('sub-header-text');
+            const refreshBtnText = document.getElementById('refresh-btn-text');
+            
+            if (isDemoMode) {
+                status.className = "text-[10px] bg-amber-500/20 text-amber-200 px-2 py-1 rounded-full flex items-center gap-1";
+                status.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span>デモ動作中`;
+                subHeader.innerText = "お試しデモ環境（スプシ未連携）";
+                refreshBtnText.innerText = "デモリセット";
+            } else {
+                status.className = "text-[10px] bg-white/20 text-white px-2 py-1 rounded-full flex items-center gap-1";
+                status.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>同期中`;
+                subHeader.innerText = "マイ・スプレッドシート連携システム";
+                refreshBtnText.innerText = "同期更新";
+            }
+        }
+
+        // メッセージ表示
+        function alertMessage(msg) {
+            document.getElementById('modal-text').innerText = msg;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        // 設定画面を開く/閉じる
+        function openConfig() {
+            document.getElementById('api-url-input').value = isDemoMode ? "" : GAS_API_URL;
+            document.getElementById('config-modal').classList.remove('hidden');
+        }
+
+        function closeConfig() {
+            document.getElementById('config-modal').classList.add('hidden');
+        }
+
+        function saveConfig() {
+            const url = document.getElementById('api-url-input').value.trim();
+            closeConfig();
+
+            if (!url) {
+                // URLを空欄にして保存した場合はデモモードへ
+                setupDemoMode();
+                return;
+            }
+
+            if (!url.startsWith("https://script.google.com/")) {
+                alertMessage("正しいGoogle Apps ScriptのウェブアプリURLではありません。もう一度お確かめください。");
+                return;
+            }
+
+            GAS_API_URL = url;
+            localStorage.setItem(API_KEY_STORAGE, url);
+            isDemoMode = false;
+            reloadData();
+        }
+
+        // ローディングの表示切り替え
+        function toggleLoading(show, text = "スプレッドシートと同期中...") {
+            const overlay = document.getElementById('loading-overlay');
+            document.getElementById('loading-text').innerText = text;
+            if (show) {
+                overlay.classList.remove('hidden');
+            } else {
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // データ読み込み（GETリクエスト）
+        function reloadData() {
+            if (isDemoMode) {
+                // デモモードなら初期データでリセット
+                sheetData = JSON.parse(JSON.stringify(demoData));
+                renderCards();
+                return;
+            }
+
+            if (!GAS_API_URL) {
+                openConfig();
+                return;
+            }
+
+            toggleLoading(true, "データを取得しています...");
+
+            fetch(GAS_API_URL)
+                .then(response => {
+                    if (!response.ok) throw new Error("CORS or Server Error");
+                    return response.json();
+                })
+                .then(data => {
+                    sheetData = data;
+                    renderCards();
+                    updateSyncStatus();
+                    toggleLoading(false);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    toggleLoading(false);
+                    alertMessage("データ取得に失敗しました。\n接続設定のURLが正しいか、公開設定が『全員(Anyone)』になっているかPCからご確認ください。");
+                });
+        }
+
+        // タブ切り替え
+        function switchTab(tabName) {
+            currentTab = tabName;
+            openAccordions.clear();
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-teal-600', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+            });
+            
+            const activeTab = document.getElementById(`tab-${tabName}`);
+            activeTab.classList.remove('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+            activeTab.classList.add('bg-teal-600', 'text-white', 'shadow-sm');
+
+            document.getElementById('search-input').value = '';
+            renderCards();
+        }
+
+        // 進捗メーター更新
+        function updateProgressBar() {
+            const list = sheetData[currentTab] || [];
+            let totalItems = 0;
+            let checkedItems = 0;
+
+            list.forEach(item => {
+                totalItems += 4;
+                if (item.test_create) checkedItems++;
+                if (item.test_print) checkedItems++;
+                if (item.notebook) checkedItems++;
+                if (item.review) checkedItems++;
+
+                if (item.task_name) {
