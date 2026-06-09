@@ -104,7 +104,7 @@
             <button onclick="switchTab('基礎数')" id="tab-基礎数" class="tab-btn px-4.5 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">基礎数</button>
         </div>
 
-        <!-- 進捗・検索トグルバー（新設） -->
+        <!-- 進捗・検索トグルバー -->
         <div onclick="toggleSearchProgress()" class="bg-teal-50/60 border-b border-gray-200 px-4 py-1.5 flex justify-between items-center cursor-pointer select-none text-xs text-teal-800 hover:bg-teal-100/40 active:bg-teal-100/60 transition flex-shrink-0">
             <span class="flex items-center gap-1.5 font-semibold">
                 <i data-lucide="sliders" class="w-3.5 h-3.5 text-teal-600"></i>
@@ -211,7 +211,7 @@
             if (GAS_API_URL) { reloadData(); } else { setupDemoMode(); }
         };
 
-        // 進捗・検索コンテナの折りたたみ切り替え関数（新設）
+        // 進捗・検索コンテナの折りたたみ切り替え関数
         function toggleSearchProgress() {
             const container = document.getElementById('search-progress-area');
             const icon = document.getElementById('toggle-sp-icon');
@@ -362,30 +362,44 @@
                 });
                 const gPercent = gTotal > 0 ? Math.round((gChecked / gTotal) * 100) : 0;
 
-                // 考査ヘッダー色決定
-                let colorClass = "from-slate-600 to-slate-700 text-white";
-                if (examName.includes("中間")) colorClass = "from-sky-600 to-teal-600 text-white";
-                if (examName.includes("期末")) colorClass = "from-purple-600 to-indigo-600 text-white";
-                if (examName.includes("学年末")) colorClass = "from-rose-600 to-pink-600 text-white";
+                // 考査範囲ごとのカラーアクセント設定（左側の細いボーダーとバッジ色）
+                let borderColorClass = "border-slate-400";
+                let textColorClass = "text-slate-800";
+                let badgeColorClass = "bg-slate-100 text-slate-600 border border-slate-200/60";
+                
+                if (examName.includes("中間")) {
+                    borderColorClass = "border-sky-500";
+                    textColorClass = "text-sky-900";
+                    badgeColorClass = "bg-sky-50 text-sky-700 border border-sky-100";
+                } else if (examName.includes("期末")) {
+                    borderColorClass = "border-purple-500";
+                    textColorClass = "text-purple-900";
+                    badgeColorClass = "bg-purple-50 text-purple-700 border border-purple-100";
+                } else if (examName.includes("学年末")) {
+                    borderColorClass = "border-rose-500";
+                    textColorClass = "text-rose-900";
+                    badgeColorClass = "bg-rose-50 text-rose-700 border border-rose-100";
+                }
 
-                // 親コンテナ作成
+                // 親コンテナ作成（角丸カードとして統一）
                 const groupWrapper = document.createElement('div');
                 groupWrapper.className = "bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden exam-group-container";
                 groupWrapper.dataset.exam = examName;
 
-                // 親ヘッダーのHTML（文字サイズを元の落ち着いたサイズ「text-base」「text-xs」に戻し、太すぎない font-semibold に変更）
+                // 親ヘッダーのHTML（文字サイズを text-base, text-xs の元の落ち着いた大きさに統一。サイズをすべて固定配置）
                 let headerHTML = `
-                    <div onclick="toggleExamAccordion('${examName}')" class="bg-gradient-to-r ${colorClass} p-3.5 flex justify-between items-center cursor-pointer select-none font-semibold shadow-sm">
-                        <div class="flex items-center gap-2">
-                            <span class="text-base tracking-wide">${examName} 範囲</span>
-                            <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-normal">全 ${itemsInGroup.length} 単元</span>
+                    <div onclick="toggleExamAccordion('${examName}')" class="bg-white border-l-4 ${borderColorClass} h-14 px-4 flex justify-between items-center cursor-pointer select-none font-semibold shadow-sm hover:bg-gray-50/50 transition duration-150">
+                        <div class="flex items-center">
+                            <!-- 幅を固定して位置を完璧に揃える -->
+                            <span class="text-base tracking-wide ${textColorClass} w-24 block truncate">${examName} 範囲</span>
+                            <span class="text-[10px] ${badgeColorClass} px-2.5 py-0.5 rounded-full font-medium text-center w-20 block truncate">全 ${itemsInGroup.length} 単元</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <span class="text-xs text-teal-100 font-medium">${gPercent}% 完了</span>
-                            <i id="exam-icon-${examName}" data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-200" style="${isExamOpen ? 'transform: rotate(180deg);' : ''}"></i>
+                            <span class="text-xs text-gray-500 font-medium w-16 text-right">${gPercent}% 完了</span>
+                            <i id="exam-icon-${examName}" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-200" style="${isExamOpen ? 'transform: rotate(180deg);' : ''}"></i>
                         </div>
                     </div>
-                    <div id="exam-content-${examName}" class="exam-content ${isExamOpen ? 'open' : ''} bg-gray-50/50 p-2 space-y-2.5">
+                    <div id="exam-content-${examName}" class="exam-content ${isExamOpen ? 'open' : ''} bg-gray-50/50 p-2.5 space-y-2.5">
                 `;
 
                 // 3. 各授業カード（子）のアコーディオンを生成
@@ -423,7 +437,7 @@
                                 </div>
                             </div>
 
-                            <!-- 子アコーディオン：開閉するチェックボックス部（フォントサイズ text-base font-normal、チェックボックスは押しやすさを保ちつつ一回りスリムな w-6 h-6 に微調整） -->
+                            <!-- 子アコーディオン：開閉するチェックボックス部 -->
                             <div id="card-content-${item.id}" class="card-content ${isCardOpen ? 'open' : ''} bg-gray-50/30 border-t border-gray-100/50">
                                 <div class="p-3.5 space-y-2 text-base text-gray-700">
                                     <label onclick="toggleAndSync(event, '${item.id}', 'test_create')" class="flex items-center justify-between p-2 rounded-lg hover:bg-white/80 cursor-pointer select-none">
