@@ -327,15 +327,15 @@
                 groupWrapper.className = "bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden exam-group-container";
                 groupWrapper.dataset.exam = examName;
 
-                // 親ヘッダーのHTML
+                // 親ヘッダーのHTML（フォントサイズ調整：text-sm -> text-base, text-[10px] -> text-xs, text-xs -> text-sm）
                 let headerHTML = `
                     <div onclick="toggleExamAccordion('${examName}')" class="bg-gradient-to-r ${colorClass} p-3.5 flex justify-between items-center cursor-pointer select-none font-bold shadow-sm">
                         <div class="flex items-center gap-2">
-                            <span class="text-sm tracking-wide">${examName}</span>
-                            <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-normal">全 ${itemsInGroup.length} 単元</span>
+                            <span class="text-base tracking-wide">${examName}</span>
+                            <span class="text-xs bg-white/20 px-2 py-0.5 rounded-full font-normal">全 ${itemsInGroup.length} 単元</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <span class="text-xs text-teal-100">${gPercent}% 完了</span>
+                            <span class="text-sm text-teal-100">${gPercent}% 完了</span>
                             <i id="exam-icon-${examName}" data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-200" style="${isExamOpen ? 'transform: rotate(180deg);' : ''}"></i>
                         </div>
                     </div>
@@ -348,54 +348,54 @@
                     const checkedCount = [item.test_create, item.test_print, item.notebook, (item.task_name ? item.task_check : null)].filter(Boolean).length;
                     const isCardOpen = openCards.has(item.id);
 
-                    let statusBadge = '<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-gray-100 text-gray-400">未着手</span>';
+                    let statusBadge = '<span class="px-1.5 py-0.5 text-xs font-bold rounded bg-gray-100 text-gray-400">未着手</span>';
                     if (checkedCount === activeProcessCount) {
-                        statusBadge = '<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-green-100 text-green-700">完了</span>';
+                        statusBadge = '<span class="px-1.5 py-0.5 text-xs font-bold rounded bg-green-100 text-green-700">完了</span>';
                     } else if (checkedCount > 0) {
-                        statusBadge = `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-100 text-amber-700">準備中 (${checkedCount}/${activeProcessCount})</span>`;
+                        statusBadge = `<span class="px-1.5 py-0.5 text-xs font-bold rounded bg-amber-100 text-amber-700">準備中 (${checkedCount}/${activeProcessCount})</span>`;
                     }
 
                     const testNumberText = item.test_number !== "なし" && item.test_number ? `小テスト #${item.test_number}` : "小テスト なし";
                     const testBadgeColor = item.test_number !== "なし" && item.test_number ? "bg-rose-50 text-rose-600 border border-rose-100" : "bg-gray-100 text-gray-400";
-                    const taskBadge = item.task_name ? `<span class="inline-flex px-1.5 py-0.5 text-[9px] font-bold rounded bg-indigo-50 text-indigo-600 border border-indigo-100 items-center gap-1 mt-0.5"><i data-lucide="clipboard" class="w-2.5 h-2.5"></i>${item.task_name}</span>` : "";
+                    const taskBadge = item.task_name ? `<span class="inline-flex px-1.5 py-0.5 text-xs font-bold rounded bg-indigo-50 text-indigo-600 border border-indigo-100 items-center gap-1 mt-0.5"><i data-lucide="clipboard" class="w-2.5 h-2.5"></i>${item.task_name}</span>` : "";
 
                     headerHTML += `
                         <div class="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm card-item" data-title="${item.title}" data-testnumber="${item.test_number}" data-taskname="${item.task_name || ''}">
-                            <!-- 子アコーディオン：ヘッダー（タップで開閉） -->
+                            <!-- 子アコーディオン：ヘッダー（タップで開閉 - フォントサイズ調整：No.[10px] -> text-xs, タイトルtext-xs -> text-sm, バッジtext-[9px] -> text-xs） -->
                             <div onclick="toggleCardAccordion(event, '${item.id}')" class="p-3 flex justify-between items-center cursor-pointer hover:bg-gray-50/50 select-none">
                                 <div class="flex-grow pr-2">
                                     <div class="flex items-center gap-2 mb-1">
-                                        <span class="text-[10px] font-bold text-gray-400">No. ${item.id}</span>
+                                        <span class="text-xs font-bold text-gray-400">No. ${item.id}</span>
                                         ${statusBadge}
                                     </div>
-                                    <h4 class="text-xs font-bold text-gray-800 leading-tight">${item.title}</h4>
+                                    <h4 class="text-sm font-bold text-gray-800 leading-tight">${item.title}</h4>
                                     ${taskBadge}
                                 </div>
                                 <div class="flex items-center gap-2 flex-shrink-0">
-                                    <span class="px-1.5 py-0.5 text-[9px] font-bold rounded-md ${testBadgeColor}">${testNumberText}</span>
+                                    <span class="px-1.5 py-0.5 text-xs font-bold rounded-md ${testBadgeColor}">${testNumberText}</span>
                                     <i id="card-icon-${item.id}" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-200" style="${isCardOpen ? 'transform: rotate(180deg);' : ''}"></i>
                                 </div>
                             </div>
 
-                            <!-- 子アコーディオン：開閉するチェックボックス部 -->
+                            <!-- 子アコーディオン：開閉するチェックボックス部（フォントサイズ調整：text-xs -> text-sm, w-4 -> w-5, h-4 -> w-5） -->
                             <div id="card-content-${item.id}" class="card-content ${isCardOpen ? 'open' : ''} bg-gray-50/30 border-t border-gray-100/50">
-                                <div class="p-3 space-y-1 text-xs text-gray-600">
+                                <div class="p-3 space-y-2 text-sm text-gray-700">
                                     <label onclick="toggleAndSync(event, '${item.id}', 'test_create')" class="flex items-center justify-between p-2 rounded hover:bg-white/80 cursor-pointer select-none">
-                                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-400"></span>小テスト 【作成】</span>
-                                        <input type="checkbox" ${item.test_create ? 'checked' : ''} class="w-4 h-4 text-teal-600 rounded focus:ring-teal-500 pointer-events-none">
+                                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>小テスト 【作成】</span>
+                                        <input type="checkbox" ${item.test_create ? 'checked' : ''} class="w-5 h-5 text-teal-600 rounded focus:ring-teal-500 pointer-events-none">
                                     </label>
                                     <label onclick="toggleAndSync(event, '${item.id}', 'test_print')" class="flex items-center justify-between p-2 rounded hover:bg-white/80 cursor-pointer select-none">
-                                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-orange-400"></span>小テスト 【印刷】</span>
-                                        <input type="checkbox" ${item.test_print ? 'checked' : ''} class="w-4 h-4 text-teal-600 rounded focus:ring-teal-500 pointer-events-none">
+                                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-orange-400"></span>小テスト 【印刷】</span>
+                                        <input type="checkbox" ${item.test_print ? 'checked' : ''} class="w-5 h-5 text-teal-600 rounded focus:ring-teal-500 pointer-events-none">
                                     </label>
                                     <label onclick="toggleAndSync(event, '${item.id}', 'notebook')" class="flex items-center justify-between p-2 rounded hover:bg-white/80 cursor-pointer select-none">
-                                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-indigo-400"></span>ノートをまとめる</span>
-                                        <input type="checkbox" ${item.notebook ? 'checked' : ''} class="w-4 h-4 text-teal-600 rounded focus:ring-teal-500 pointer-events-none">
+                                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-400"></span>ノートをまとめる</span>
+                                        <input type="checkbox" ${item.notebook ? 'checked' : ''} class="w-5 h-5 text-teal-600 rounded focus:ring-teal-500 pointer-events-none">
                                     </label>
                                     ${item.task_name ? `
                                     <label onclick="toggleAndSync(event, '${item.id}', 'task_check')" class="flex items-center justify-between p-2 bg-indigo-50/30 text-indigo-700 rounded hover:bg-indigo-50 cursor-pointer select-none font-medium">
-                                        <span class="flex items-center gap-1"><i data-lucide="clipboard-check" class="w-3.5 h-3.5"></i>提出課題チェック</span>
-                                        <input type="checkbox" ${item.task_check ? 'checked' : ''} class="w-4 h-4 text-indigo-600 rounded border-indigo-300 focus:ring-indigo-500 pointer-events-none">
+                                        <span class="flex items-center gap-1"><i data-lucide="clipboard-check" class="w-4 h-4"></i>提出課題チェック</span>
+                                        <input type="checkbox" ${item.task_check ? 'checked' : ''} class="w-5 h-5 text-indigo-600 rounded border-indigo-300 focus:ring-indigo-500 pointer-events-none">
                                     </label>
                                     ` : ''}
                                 </div>
