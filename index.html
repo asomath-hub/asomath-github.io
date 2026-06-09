@@ -93,15 +93,15 @@
             <p class="text-xs text-teal-100" id="sub-header-text">スプレッドシート連携システム</p>
         </div>
 
-        <!-- 教科タブ切り替え（7教科横スクロール - 標準サイズですっきり調整） -->
+        <!-- 教科タブ切り替え（7教科横スクロール - すべてのボタン幅をw-20[80px]で完全に統一） -->
         <div class="bg-gray-50 border-b border-gray-200 px-4 py-2.5 flex gap-2 overflow-x-auto no-scrollbar flex-shrink-0">
-            <button onclick="switchTab('数Ⅰ')" id="tab-数Ⅰ" class="tab-btn px-4.5 py-1.5 rounded-full text-sm font-semibold transition bg-teal-600 text-white shadow-sm whitespace-nowrap">数Ⅰ</button>
-            <button onclick="switchTab('数Ⅱ')" id="tab-数Ⅱ" class="tab-btn px-4.5 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">数Ⅱ</button>
-            <button onclick="switchTab('数Ⅲ')" id="tab-数Ⅲ" class="tab-btn px-4.5 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">数Ⅲ</button>
-            <button onclick="switchTab('数A')" id="tab-数A" class="tab-btn px-4.5 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">数A</button>
-            <button onclick="switchTab('数B')" id="tab-数B" class="tab-btn px-4.5 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">数B</button>
-            <button onclick="switchTab('数C')" id="tab-数C" class="tab-btn px-4.5 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">数C</button>
-            <button onclick="switchTab('基礎数')" id="tab-基礎数" class="tab-btn px-4.5 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">基礎数</button>
+            <button onclick="switchTab('数Ⅰ')" id="tab-数Ⅰ" class="tab-btn w-20 py-1.5 rounded-full text-sm font-semibold transition bg-teal-600 text-white shadow-sm text-center whitespace-nowrap flex-shrink-0">数Ⅰ</button>
+            <button onclick="switchTab('数Ⅱ')" id="tab-数Ⅱ" class="tab-btn w-20 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 text-center whitespace-nowrap flex-shrink-0">数Ⅱ</button>
+            <button onclick="switchTab('数Ⅲ')" id="tab-数Ⅲ" class="tab-btn w-20 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 text-center whitespace-nowrap flex-shrink-0">数Ⅲ</button>
+            <button onclick="switchTab('数A')" id="tab-数A" class="tab-btn w-20 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 text-center whitespace-nowrap flex-shrink-0">数A</button>
+            <button onclick="switchTab('数B')" id="tab-数B" class="tab-btn w-20 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 text-center whitespace-nowrap flex-shrink-0">数B</button>
+            <button onclick="switchTab('数C')" id="tab-数C" class="tab-btn w-20 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 text-center whitespace-nowrap flex-shrink-0">数C</button>
+            <button onclick="switchTab('基礎数')" id="tab-基礎数" class="tab-btn w-20 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 text-center whitespace-nowrap flex-shrink-0">基礎数</button>
         </div>
 
         <!-- 進捗・検索トグルバー -->
@@ -362,41 +362,27 @@
                 });
                 const gPercent = gTotal > 0 ? Math.round((gChecked / gTotal) * 100) : 0;
 
-                // 考査範囲ごとのカラーアクセント設定（左側の細いボーダーとバッジ色）
-                let borderColorClass = "border-slate-400";
-                let textColorClass = "text-slate-800";
-                let badgeColorClass = "bg-slate-100 text-slate-600 border border-slate-200/60";
-                
-                if (examName.includes("中間")) {
-                    borderColorClass = "border-sky-500";
-                    textColorClass = "text-sky-900";
-                    badgeColorClass = "bg-sky-50 text-sky-700 border border-sky-100";
-                } else if (examName.includes("期末")) {
-                    borderColorClass = "border-purple-500";
-                    textColorClass = "text-purple-900";
-                    badgeColorClass = "bg-purple-50 text-purple-700 border border-purple-100";
-                } else if (examName.includes("学年末")) {
-                    borderColorClass = "border-rose-500";
-                    textColorClass = "text-rose-900";
-                    badgeColorClass = "bg-rose-50 text-rose-700 border border-rose-100";
-                }
+                // 考査ヘッダー色決定
+                let colorClass = "from-slate-600 to-slate-700 text-white";
+                if (examName.includes("中間")) colorClass = "from-sky-600 to-teal-600 text-white";
+                if (examName.includes("期末")) colorClass = "from-purple-600 to-indigo-600 text-white";
+                if (examName.includes("学年末")) colorClass = "from-rose-600 to-pink-600 text-white";
 
                 // 親コンテナ作成（角丸カードとして統一）
                 const groupWrapper = document.createElement('div');
                 groupWrapper.className = "bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden exam-group-container";
                 groupWrapper.dataset.exam = examName;
 
-                // 親ヘッダーのHTML（文字サイズを text-base, text-xs の元の落ち着いた大きさに統一。サイズをすべて固定配置）
+                // 親ヘッダーのHTML（グラデーションカラー仕様に復元）
                 let headerHTML = `
-                    <div onclick="toggleExamAccordion('${examName}')" class="bg-white border-l-4 ${borderColorClass} h-14 px-4 flex justify-between items-center cursor-pointer select-none font-semibold shadow-sm hover:bg-gray-50/50 transition duration-150">
-                        <div class="flex items-center">
-                            <!-- 幅を固定して位置を完璧に揃える -->
-                            <span class="text-base tracking-wide ${textColorClass} w-24 block truncate">${examName} 範囲</span>
-                            <span class="text-[10px] ${badgeColorClass} px-2.5 py-0.5 rounded-full font-medium text-center w-20 block truncate">全 ${itemsInGroup.length} 単元</span>
+                    <div onclick="toggleExamAccordion('${examName}')" class="bg-gradient-to-r ${colorClass} p-3.5 flex justify-between items-center cursor-pointer select-none font-semibold shadow-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base tracking-wide">${examName} 範囲</span>
+                            <span class="text-[10px] bg-white/20 px-2.5 py-0.5 rounded-full font-normal">全 ${itemsInGroup.length} 単元</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <span class="text-xs text-gray-500 font-medium w-16 text-right">${gPercent}% 完了</span>
-                            <i id="exam-icon-${examName}" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-200" style="${isExamOpen ? 'transform: rotate(180deg);' : ''}"></i>
+                            <span class="text-xs text-teal-100 font-medium">${gPercent}% 完了</span>
+                            <i id="exam-icon-${examName}" data-lucide="chevron-down" class="w-4 h-4 text-white transition-transform duration-200" style="${isExamOpen ? 'transform: rotate(180deg);' : ''}"></i>
                         </div>
                     </div>
                     <div id="exam-content-${examName}" class="exam-content ${isExamOpen ? 'open' : ''} bg-gray-50/50 p-2.5 space-y-2.5">
@@ -421,7 +407,7 @@
 
                     headerHTML += `
                         <div class="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm card-item" data-title="${item.title}" data-testnumber="${item.test_number}" data-taskname="${item.task_name || ''}">
-                            <!-- 子アコーディオン：ヘッダー（単元タイトルは太字をやめ、すっきり大きめの text-base font-semibold に調整） -->
+                            <!-- 子アコーディオン：ヘッダー -->
                             <div onclick="toggleCardAccordion(event, '${item.id}')" class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50/50 select-none">
                                 <div class="flex-grow pr-2">
                                     <div class="flex items-center gap-1.5 mb-1">
