@@ -12,15 +12,31 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans JP", sans-serif;
             background-color: #f3f4f6;
         }
-        .accordion-content {
+        
+        /* 考査ブロック用（親）のアコーディオンアニメーション */
+        .exam-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.25s ease-out, padding 0.25s ease-out;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 0;
         }
-        .accordion-content.open {
-            max-height: 500px;
-            transition: max-height 0.3s ease-in, padding 0.3s ease-in;
+        .exam-content.open {
+            max-height: 10000px; /* 大量の授業カードに対応できるように大きく */
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 1;
         }
+
+        /* 授業回カード用（子）のアコーディオンアニメーション */
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1), padding 0.25s ease;
+        }
+        .card-content.open {
+            max-height: 400px; /* 項目が展開するのに十分な高さ */
+            transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1), padding 0.25s ease;
+        }
+
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -28,15 +44,10 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        /* ロード用アニメーション */
         .loader {
             border-top-color: #0d9488;
             -webkit-animation: spinner 1.5s linear infinite;
             animation: spinner 1.5s linear infinite;
-        }
-        @-webkit-keyframes spinner {
-            0% { -webkit-transform: rotate(0deg); }
-            100% { -webkit-transform: rotate(360deg); }
         }
         @keyframes spinner {
             0% { transform: rotate(0deg); }
@@ -62,41 +73,24 @@
                     <i data-lucide="book-open" class="w-6 h-6"></i>
                     数学科 授業準備
                 </h1>
-                <span class="text-xs px-2 py-1 rounded-full flex items-center gap-1" id="sync-status">
-                    <!-- JavaScriptで同期状態を動的に変更 -->
-                </span>
+                <span class="text-xs px-2 py-1 rounded-full flex items-center gap-1" id="sync-status"></span>
             </div>
             <p class="text-xs text-teal-100" id="sub-header-text">スプレッドシート連携システム</p>
         </div>
 
-        <!-- 教科タブ切り替え（7教科横スクロール対応） -->
-        <div class="bg-gray-50 border-b border-gray-200 px-4 py-2.5 flex gap-2 overflow-x-auto no-scrollbar flex-shrink-0">
-            <button onclick="switchTab('数Ⅰ')" id="tab-数Ⅰ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-teal-600 text-white shadow-sm whitespace-nowrap">
-                数Ⅰ
-            </button>
-            <button onclick="switchTab('数Ⅱ')" id="tab-数Ⅱ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">
-                数Ⅱ
-            </button>
-            <button onclick="switchTab('数Ⅲ')" id="tab-数Ⅲ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">
-                数Ⅲ
-            </button>
-            <button onclick="switchTab('数A')" id="tab-数A" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">
-                数A
-            </button>
-            <button onclick="switchTab('数B')" id="tab-数B" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">
-                数B
-            </button>
-            <button onclick="switchTab('数C')" id="tab-数C" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">
-                数C
-            </button>
-            <button onclick="switchTab('基礎数')" id="tab-基礎数" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">
-                基礎数
-            </button>
+        <!-- 教科タブ切り替え（7教科横スクロール） -->
+        <div class="bg-gray-50 border-b border-gray-200 px-4 py-2 flex gap-2 overflow-x-auto no-scrollbar flex-shrink-0">
+            <button onclick="switchTab('数Ⅰ')" id="tab-数Ⅰ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-teal-600 text-white shadow-sm whitespace-nowrap">数Ⅰ</button>
+            <button onclick="switchTab('数Ⅱ')" id="tab-数Ⅱ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">数Ⅱ</button>
+            <button onclick="switchTab('数Ⅲ')" id="tab-数Ⅲ" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">数Ⅲ</button>
+            <button onclick="switchTab('数A')" id="tab-数A" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">数A</button>
+            <button onclick="switchTab('数B')" id="tab-数B" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">数B</button>
+            <button onclick="switchTab('数C')" id="tab-数C" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">数C</button>
+            <button onclick="switchTab('基礎数')" id="tab-基礎数" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">基礎数</button>
         </div>
 
         <!-- 検索 ＆ 進捗メーター -->
         <div class="p-3 bg-white border-b border-gray-100 flex-shrink-0">
-            <!-- 進捗バー -->
             <div class="mb-3">
                 <div class="flex justify-between text-xs text-gray-500 mb-1">
                     <span>選択中の教科の全体進捗</span>
@@ -106,16 +100,15 @@
                     <div id="progress-bar" class="bg-gradient-to-r from-teal-500 to-emerald-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
             </div>
-            <!-- 検索窓 -->
             <div class="relative">
-                <input type="text" id="search-input" oninput="filterCards()" placeholder="単元名、考査（1中間）、小テスト番号等で検索..." class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+                <input type="text" id="search-input" oninput="filterCards()" placeholder="授業内容、考査名、小テスト番号で検索..." class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
                 <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
             </div>
         </div>
 
-        <!-- カード一覧表示エリア（縦スクロール） -->
-        <div id="card-list" class="flex-grow p-4 overflow-y-auto space-y-3 bg-gray-50">
-            <!-- JavaScriptでカードを配置 -->
+        <!-- 考査グループ一覧表示エリア（縦スクロール） -->
+        <div id="card-list" class="flex-grow p-4 overflow-y-auto space-y-4 bg-gray-50">
+            <!-- JavaScriptで考査・授業回のダブルアコーディオンを配置 -->
         </div>
 
         <!-- 下部ナビゲーション -->
@@ -131,22 +124,20 @@
         </div>
     </div>
 
-    <!-- 設定モーダル（API URL登録） -->
+    <!-- 設定モーダル -->
     <div id="config-modal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl">
             <h3 class="text-lg font-bold text-gray-800 mb-2 flex items-center gap-2">
                 <i data-lucide="settings" class="text-teal-600"></i>スプシ接続設定
             </h3>
-            <p class="text-xs text-gray-500 mb-4">作成したGoogle Apps Script (GAS) の「ウェブアプリ URL」を貼り付けてスプレッドシートと連動させます。空欄で保存すると「デモモード」で動かせます。</p>
-            
+            <p class="text-xs text-gray-500 mb-4">作成したGASの「ウェブアプリ URL」を貼り付けます。</p>
             <div class="mb-4">
                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">GAS Web App URL</label>
                 <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500">
             </div>
-
             <div class="flex gap-2">
-                <button onclick="closeConfig()" class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-xl text-xs font-medium hover:bg-gray-200 transition">閉じる</button>
-                <button onclick="saveConfig()" class="flex-1 bg-teal-600 text-white py-2 rounded-xl text-xs font-medium hover:bg-teal-700 transition">保存して接続</button>
+                <button onclick="closeConfig()" class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-xl text-xs font-medium">閉じる</button>
+                <button onclick="saveConfig()" class="flex-1 bg-teal-600 text-white py-2 rounded-xl text-xs font-medium">保存して接続</button>
             </div>
         </div>
     </div>
@@ -154,13 +145,12 @@
     <!-- カスタムダイアログ -->
     <div id="custom-modal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
         <div class="bg-white rounded-2xl max-w-xs w-full p-6 text-center shadow-2xl">
-            <p id="modal-text" class="text-gray-700 text-sm mb-4 font-medium whitespace-pre-line leading-relaxed"></p>
-            <button onclick="closeModal()" class="w-full bg-teal-600 text-white py-2 rounded-xl text-sm font-medium hover:bg-teal-700 transition">閉じる</button>
+            <p id="modal-text" class="text-gray-700 text-sm mb-4 font-medium whitespace-pre-line"></p>
+            <button onclick="closeModal()" class="w-full bg-teal-600 text-white py-2 rounded-xl text-sm font-medium">閉じる</button>
         </div>
     </div>
 
     <script>
-        // 設定情報の保存キー
         const API_KEY_STORAGE = "MATH_APP_GAS_URL";
         let GAS_API_URL = localStorage.getItem(API_KEY_STORAGE) || "";
 
@@ -169,52 +159,31 @@
             "数Ⅰ": [
                 { id: "1", exam_range: "1中間", title: "命題・条件・p⇒q", test_number: "なし", task_name: null, test_create: true, test_print: false, notebook: false, task_check: false },
                 { id: "2", exam_range: "1中間", title: "必要条件・十分条件・条件の否定", test_number: "なし", task_name: null, test_create: true, test_print: true, notebook: false, task_check: false },
-                { id: "3", exam_range: "1中間", title: "逆・裏・対偶・対偶の真偽", test_number: "なし", task_name: null, test_create: true, test_print: false, notebook: false, task_check: false },
-                { id: "4", exam_range: "1期末", title: "2次関数の最大・最小", test_number: "24", task_name: null, test_create: true, test_print: true, notebook: true, task_check: false }
+                { id: "3", exam_range: "1期末", title: "逆・裏・対偶・対偶の真偽", test_number: "なし", task_name: null, test_create: true, test_print: false, notebook: false, task_check: false },
+                { id: "4", exam_range: "1期末", title: "2次関数の最大・最小", test_number: "24", task_name: "関数課題", test_create: true, test_print: true, notebook: true, task_check: false }
             ],
             "数Ⅱ": [
                 { id: "1", exam_range: "1中間", title: "一般角・動径", test_number: "1", task_name: null, test_create: true, test_print: true, notebook: false, task_check: false },
-                { id: "2", exam_range: "1中間", title: "弧度法", test_number: "2", task_name: null, test_create: true, test_print: true, notebook: false, task_check: false },
-                { id: "3", exam_range: "1中間", title: "弧度法と扇形", test_number: "3", task_name: null, test_create: true, test_print: true, notebook: false, task_check: false },
-                { id: "4", exam_range: "1期末", title: "三角関数", test_number: "4", task_name: "課題①", test_create: true, test_print: true, notebook: true, task_check: false }
+                { id: "2", exam_range: "1期末", title: "三角関数", test_number: "4", task_name: "課題①", test_create: true, test_print: true, notebook: true, task_check: false }
             ],
-            "数Ⅲ": [
-                { id: "1", exam_range: "1中間", title: "複素数平面と極形式", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false },
-                { id: "2", exam_range: "1中間", title: "ド・モアブルの定理", test_number: "2", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false },
-                { id: "3", exam_range: "1期末", title: "分数関数と無理関数", test_number: "なし", task_name: "関数演習課題", test_create: false, test_print: false, notebook: false, task_check: false }
-            ],
-            "数A": [
-                { id: "1", exam_range: "1中間", title: "集合と要素・集合の表し方", test_number: "1", task_name: null, test_create: true, test_print: true, notebook: true, task_check: false },
-                { id: "2", exam_range: "1中間", title: "部分集合", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: true, task_check: false },
-                { id: "3", exam_range: "1期末", title: "組合せの総数", test_number: "なし", task_name: "組合せ確認課題", test_create: true, test_print: true, notebook: true, task_check: false }
-            ],
-            "数B": [
-                { id: "1", exam_range: "1中間", title: "等差数列と等比数列", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false },
-                { id: "2", exam_range: "1中間", title: "シグマの計算", test_number: "2", task_name: "数列演習", test_create: false, test_print: false, notebook: false, task_check: false }
-            ],
-            "数C": [
-                { id: "1", exam_range: "1中間", title: "ベクトルとその演算", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false },
-                { id: "2", exam_range: "1期末", title: "ベクトルの内積", test_number: "2", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false }
-            ],
-            "基礎数": [
-                { id: "1", exam_range: "1中間", title: "整数の計算と割合", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false },
-                { id: "2", exam_range: "1中間", title: "一次方程式の基本", test_number: "1", task_name: "基礎プリント", test_create: false, test_print: false, notebook: false, task_check: false }
-            ]
+            "数Ⅲ": [{ id: "1", exam_range: "1中間", title: "複素数平面と極形式", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false }],
+            "数A": [{ id: "1", exam_range: "1中間", title: "集合と要素・集合の表し方", test_number: "1", task_name: null, test_create: true, test_print: true, notebook: true, task_check: false }],
+            "数B": [{ id: "1", exam_range: "1中間", title: "等差数列と等比数列", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false }],
+            "数C": [{ id: "1", exam_range: "1中間", title: "ベクトルとその演算", test_number: "1", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false }],
+            "基礎数": [{ id: "1", exam_range: "1中間", title: "整数の計算と割合", test_number: "なし", task_name: null, test_create: false, test_print: false, notebook: false, task_check: false }]
         };
 
         let sheetData = {};
         let isDemoMode = false;
-        const openAccordions = new Set();
         let currentTab = '数Ⅰ';
+        
+        // 状態管理
+        const openExams = new Set(["1中間", "1期末", "2中間", "2期末", "学年末"]); // 展開中の考査範囲（親）
+        const openCards = new Set(); // 展開中の授業回カード（子）
 
         window.onload = function() {
             lucide.createIcons();
-            
-            if (GAS_API_URL) {
-                reloadData();
-            } else {
-                setupDemoMode();
-            }
+            if (GAS_API_URL) { reloadData(); } else { setupDemoMode(); }
         };
 
         function setupDemoMode() {
@@ -222,14 +191,13 @@
             sheetData = JSON.parse(JSON.stringify(demoData));
             renderCards();
             updateSyncStatus();
-            alertMessage("【デモモードで起動しました】\n接続設定からスプレッドシートのGAS URLを設定すると、本物のデータとリアルタイム連動します。まずはこのまま使いやすさを試してみてください！");
+            alertMessage("【デモモードで起動しました】\n接続設定からURLを設定すると、本物のデータと連動します。");
         }
 
         function updateSyncStatus() {
             const status = document.getElementById('sync-status');
             const subHeader = document.getElementById('sub-header-text');
             const refreshBtnText = document.getElementById('refresh-btn-text');
-            
             if (isDemoMode) {
                 status.className = "text-[10px] bg-amber-500/20 text-amber-200 px-2 py-1 rounded-full flex items-center gap-1";
                 status.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span>デモ動作中`;
@@ -247,288 +215,237 @@
             document.getElementById('modal-text').innerText = msg;
             document.getElementById('custom-modal').classList.remove('hidden');
         }
-
-        function closeModal() {
-            document.getElementById('custom-modal').classList.add('hidden');
-        }
-
+        function closeModal() { document.getElementById('custom-modal').classList.add('hidden'); }
         function openConfig() {
             document.getElementById('api-url-input').value = isDemoMode ? "" : GAS_API_URL;
             document.getElementById('config-modal').classList.remove('hidden');
         }
-
-        function closeConfig() {
-            document.getElementById('config-modal').classList.add('hidden');
-        }
+        function closeConfig() { document.getElementById('config-modal').classList.add('hidden'); }
 
         function saveConfig() {
             const url = document.getElementById('api-url-input').value.trim();
             closeConfig();
-
-            if (!url) {
-                setupDemoMode();
-                return;
-            }
-
-            if (!url.startsWith("https://script.google.com/")) {
-                alertMessage("正しいGoogle Apps ScriptのウェブアプリURLではありません。もう一度お確かめください。");
-                return;
-            }
-
+            if (!url) { setupDemoMode(); return; }
+            if (!url.startsWith("https://script.google.com/")) { alertMessage("正しいURLではありません。"); return; }
             GAS_API_URL = url;
             localStorage.setItem(API_KEY_STORAGE, url);
             isDemoMode = false;
             reloadData();
         }
 
-        function toggleLoading(show, text = "スプレッドシートと同期中...") {
+        function toggleLoading(show, text = "") {
             const overlay = document.getElementById('loading-overlay');
             document.getElementById('loading-text').innerText = text;
-            if (show) {
-                overlay.classList.remove('hidden');
-            } else {
-                overlay.classList.add('hidden');
-            }
+            if (show) overlay.classList.remove('hidden'); else overlay.classList.add('hidden');
         }
 
         function reloadData() {
-            if (isDemoMode) {
-                sheetData = JSON.parse(JSON.stringify(demoData));
-                renderCards();
-                return;
-            }
-
-            if (!GAS_API_URL) {
-                openConfig();
-                return;
-            }
-
+            if (isDemoMode) { sheetData = JSON.parse(JSON.stringify(demoData)); renderCards(); return; }
+            if (!GAS_API_URL) { openConfig(); return; }
             toggleLoading(true, "データを取得しています...");
-
             fetch(GAS_API_URL)
-                .then(response => {
-                    if (!response.ok) throw new Error("CORS or Server Error");
-                    return response.json();
-                })
-                .then(data => {
-                    sheetData = data;
-                    renderCards();
-                    updateSyncStatus();
-                    toggleLoading(false);
-                })
-                .catch(error => {
-                    console.error("Error fetching data:", error);
-                    toggleLoading(false);
-                    alertMessage("データ取得に失敗しました。\n接続設定のURLが正しいか、公開設定が『全員(Anyone)』になっているかPCからご確認ください。");
-                });
+                .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+                .then(data => { sheetData = data; renderCards(); updateSyncStatus(); toggleLoading(false); })
+                .catch(() => { toggleLoading(false); alertMessage("データ取得に失敗しました。URLや共有設定をご確認ください。"); });
         }
 
         function switchTab(tabName) {
             currentTab = tabName;
-            openAccordions.clear();
-            
+            openCards.clear(); // タブ切り替え時に展開カードをリセット
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('bg-teal-600', 'text-white', 'shadow-sm');
                 btn.classList.add('bg-white', 'text-gray-600', 'border', 'border-gray-200');
             });
-            
             const activeTab = document.getElementById(`tab-${tabName}`);
             if (activeTab) {
                 activeTab.classList.remove('bg-white', 'text-gray-600', 'border', 'border-gray-200');
                 activeTab.classList.add('bg-teal-600', 'text-white', 'shadow-sm');
-                
-                // 選んだタブボタンがはみ出ている場合、自動で横スクロール位置を調整
                 activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
-
             document.getElementById('search-input').value = '';
             renderCards();
         }
 
-        // 進捗メーター更新（基本3タスク＋動的1タスクに設定変更）
         function updateProgressBar() {
             const list = sheetData[currentTab] || [];
-            let totalItems = 0;
-            let checkedItems = 0;
-
+            let total = 0, checked = 0;
             list.forEach(item => {
-                totalItems += 3; // 作成、印刷、ノート
-                if (item.test_create) checkedItems++;
-                if (item.test_print) checkedItems++;
-                if (item.notebook) checkedItems++;
-
-                if (item.task_name) {
-                    totalItems += 1;
-                    if (item.task_check) checkedItems++;
-                }
+                total += 3;
+                if (item.test_create) checked++;
+                if (item.test_print) checked++;
+                if (item.notebook) checked++;
+                if (item.task_name) { total += 1; if (item.task_check) checked++; }
             });
-
-            const percent = totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
-            
-            const progressBar = document.getElementById('progress-bar');
-            const progressPercent = document.getElementById('progress-percent');
-            progressBar.style.width = `${percent}%`;
-            progressPercent.innerText = `${percent}%`;
+            const percent = total > 0 ? Math.round((checked / total) * 100) : 0;
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-percent').innerText = `${percent}%`;
         }
 
+        // 🌟 考査・授業回のダブルアコーディオン構成で描画する関数
         function renderCards() {
             const list = sheetData[currentTab] || [];
             const container = document.getElementById('card-list');
             container.innerHTML = '';
 
             if (list.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-12 text-gray-400">
-                        <i data-lucide="info" class="w-8 h-8 mx-auto mb-2 text-gray-300"></i>
-                        シート「${currentTab}」にデータがありません。
-                    </div>`;
+                container.innerHTML = `<div class="text-center py-12 text-gray-400"><i data-lucide="info" class="w-8 h-8 mx-auto mb-2"></i>シート「${currentTab}」にデータがありません。</div>`;
                 lucide.createIcons();
+                updateProgressBar();
                 return;
             }
 
-            list.forEach((item, index) => {
-                const activeProcessCount = item.task_name ? 4 : 3;
-                const checkedCount = [
-                    item.test_create, 
-                    item.test_print, 
-                    item.notebook, 
-                    (item.task_name ? item.task_check : null)
-                ].filter(Boolean).length;
+            // 1. データを考査範囲ごとにグループ化
+            const groups = {};
+            list.forEach(item => {
+                const exam = item.exam_range || "未定";
+                if (!groups[exam]) groups[exam] = [];
+                groups[exam].push(item);
+            });
 
-                let statusBadge = '';
-                if (checkedCount === activeProcessCount) {
-                    statusBadge = '<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-green-100 text-green-700">完了</span>';
-                } else if (checkedCount > 0) {
-                    statusBadge = `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-100 text-amber-700">準備中 (${checkedCount}/${activeProcessCount})</span>`;
-                } else {
-                    statusBadge = '<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-gray-100 text-gray-400">未着手</span>';
-                }
+            // 2. 各考査グループ（親）のアコーディオンを生成
+            Object.keys(groups).forEach(examName => {
+                const itemsInGroup = groups[examName];
+                const isExamOpen = openExams.has(examName);
+                
+                // 考査内進捗率
+                let gTotal = 0, gChecked = 0;
+                itemsInGroup.forEach(item => {
+                    gTotal += 3;
+                    if (item.test_create) gChecked++; if (item.test_print) gChecked++; if (item.notebook) gChecked++;
+                    if (item.task_name) { gTotal++; if (item.task_check) gChecked++; }
+                });
+                const gPercent = gTotal > 0 ? Math.round((gChecked / gTotal) * 100) : 0;
 
-                // 小テストバッジ
-                const testNumberText = item.test_number !== "なし" && item.test_number ? `小テスト #${item.test_number}` : "小テスト なし";
-                const testBadgeColor = item.test_number !== "なし" && item.test_number ? "bg-rose-50 text-rose-600 border border-rose-100" : "bg-gray-50 text-gray-400";
-                const testNumberBadge = `<span class="px-2 py-0.5 text-[10px] font-bold rounded-lg ${testBadgeColor} flex items-center gap-1"><i data-lucide="file-text" class="w-3 h-3"></i>${testNumberText}</span>`;
+                // 考査ヘッダー色決定
+                let colorClass = "from-slate-600 to-slate-700 text-white";
+                if (examName.includes("中間")) colorClass = "from-sky-600 to-teal-600 text-white";
+                if (examName.includes("期末")) colorClass = "from-purple-600 to-indigo-600 text-white";
+                if (examName.includes("学年末")) colorClass = "from-rose-600 to-pink-600 text-white";
 
-                // 課題バッジ
-                const taskBadge = item.task_name ? `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center gap-1 mt-1"><i data-lucide="clipboard" class="w-2.5 h-2.5"></i>${item.task_name}</span>` : "";
+                // 親コンテナ作成
+                const groupWrapper = document.createElement('div');
+                groupWrapper.className = "bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden exam-group-container";
+                groupWrapper.dataset.exam = examName;
 
-                // 考査範囲タグの色分け
-                let examTagColorClass = "bg-slate-100 text-slate-600 border-slate-200";
-                const examText = item.exam_range || "未定";
-                if (examText.includes("中間")) {
-                    examTagColorClass = "bg-sky-50 text-sky-700 border-sky-100";
-                } else if (examText.includes("期末")) {
-                    examTagColorClass = "bg-purple-50 text-purple-700 border-purple-100";
-                } else if (examText.includes("学年末")) {
-                    examTagColorClass = "bg-rose-50 text-rose-700 border-rose-100";
-                }
-
-                const isOpen = openAccordions.has(item.id);
-                const accordionClass = isOpen ? 'accordion-content open' : 'accordion-content';
-                const iconRotationStyle = isOpen ? 'transform: rotate(180deg);' : '';
-
-                const card = document.createElement('div');
-                card.className = "bg-white rounded-2xl shadow-sm border border-gray-200/80 overflow-hidden card-item transition hover:shadow-md flex";
-                card.dataset.title = item.title;
-                card.dataset.testnumber = item.test_number || "";
-                card.dataset.taskname = item.task_name || "";
-                card.dataset.examrange = examText;
-
-                card.innerHTML = `
-                    <!-- 左端：短い考査範囲タグ（1中間、1期末など） -->
-                    <div class="w-12 flex-shrink-0 flex items-center justify-center border-r text-[10px] font-bold p-1 text-center select-none ${examTagColorClass}">
-                        <span class="writing-mode-vertical">${examText}</span>
-                    </div>
-
-                    <!-- 右側：メインコンテンツ -->
-                    <div class="flex-grow flex flex-col">
-                        <!-- ヘッダー（タップ開閉） -->
-                        <div onclick="toggleAccordion('${item.id}')" class="p-3.5 flex justify-between items-start cursor-pointer hover:bg-gray-50/50 active:bg-gray-50 transition duration-150 select-none">
-                            <div class="flex-grow pr-2">
-                                <div class="flex items-center gap-1.5 mb-1">
-                                    <span class="text-[10px] font-bold text-gray-400">No.${item.id}</span>
-                                    ${statusBadge}
-                                </div>
-                                <h3 class="text-sm font-bold text-gray-800 leading-tight">${item.title}</h3>
-                                ${taskBadge}
-                            </div>
-                            
-                            <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
-                                ${testNumberBadge}
-                                <i id="icon-${item.id}" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-200" style="${iconRotationStyle}"></i>
-                            </div>
+                // 親ヘッダーのHTML
+                let headerHTML = `
+                    <div onclick="toggleExamAccordion('${examName}')" class="bg-gradient-to-r ${colorClass} p-3.5 flex justify-between items-center cursor-pointer select-none font-bold shadow-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm tracking-wide">${examName}</span>
+                            <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-normal">全 ${itemsInGroup.length} 単元</span>
                         </div>
-
-                        <!-- 折りたたみコンテンツ -->
-                        <div id="content-${item.id}" class="${accordionClass} bg-gray-50/50 border-t border-gray-100">
-                            <div class="p-4 space-y-3">
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">授業準備項目</p>
-                                
-                                <!-- 1. 小テスト作成 -->
-                                <div onclick="toggleAndSync(event, '${item.id}', 'test_create')" class="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-100 active:bg-teal-50 transition cursor-pointer select-none">
-                                    <span class="text-sm font-medium text-gray-700 flex items-center gap-2">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
-                                        小テスト 【作成】
-                                    </span>
-                                    <input type="checkbox" ${item.test_create ? 'checked' : ''} class="w-5 h-5 rounded-md border-gray-300 text-teal-600 focus:ring-teal-500 pointer-events-none">
-                                </div>
-
-                                <!-- 2. 小テスト印刷 -->
-                                <div onclick="toggleAndSync(event, '${item.id}', 'test_print')" class="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-100 active:bg-teal-50 transition cursor-pointer select-none">
-                                    <span class="text-sm font-medium text-gray-700 flex items-center gap-2">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-orange-400"></span>
-                                        小テスト 【印刷】
-                                    </span>
-                                    <input type="checkbox" ${item.test_print ? 'checked' : ''} class="w-5 h-5 rounded-md border-gray-300 text-teal-600 focus:ring-teal-500 pointer-events-none">
-                                </div>
-
-                                <!-- 3. ノートをまとめる -->
-                                <div onclick="toggleAndSync(event, '${item.id}', 'notebook')" class="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-100 active:bg-teal-50 transition cursor-pointer select-none">
-                                    <span class="text-sm font-medium text-gray-700 flex items-center gap-2">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-indigo-400"></span>
-                                        ノートをまとめる
-                                    </span>
-                                    <input type="checkbox" ${item.notebook ? 'checked' : ''} class="w-5 h-5 rounded-md border-gray-300 text-teal-600 focus:ring-teal-500 pointer-events-none">
-                                </div>
-
-                                <!-- 4. 課題内容チェック（課題がある日だけ自動出現） -->
-                                ${item.task_name ? `
-                                <div onclick="toggleAndSync(event, '${item.id}', 'task_check')" class="flex items-center justify-between p-3 bg-indigo-50 border border-indigo-100 rounded-xl active:bg-indigo-100 transition cursor-pointer select-none mt-2">
-                                    <span class="text-sm font-bold text-indigo-700 flex items-center gap-2">
-                                        <i data-lucide="clipboard-check" class="w-4 h-4"></i>
-                                        提出課題 【${item.task_name}】
-                                    </span>
-                                    <input type="checkbox" ${item.task_check ? 'checked' : ''} class="w-5 h-5 rounded-md border-indigo-300 text-indigo-600 focus:ring-indigo-500 pointer-events-none">
-                                </div>
-                                ` : ''}
-
-                            </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-teal-100">${gPercent}% 完了</span>
+                            <i id="exam-icon-${examName}" data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-200" style="${isExamOpen ? 'transform: rotate(180deg);' : ''}"></i>
                         </div>
                     </div>
+                    <div id="exam-content-${examName}" class="exam-content ${isExamOpen ? 'open' : ''} bg-gray-50/50 p-2 space-y-2">
                 `;
-                container.appendChild(card);
+
+                // 3. 各授業カード（子）のアコーディオンを生成
+                itemsInGroup.forEach(item => {
+                    const activeProcessCount = item.task_name ? 4 : 3;
+                    const checkedCount = [item.test_create, item.test_print, item.notebook, (item.task_name ? item.task_check : null)].filter(Boolean).length;
+                    const isCardOpen = openCards.has(item.id);
+
+                    let statusBadge = '<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-gray-100 text-gray-400">未着手</span>';
+                    if (checkedCount === activeProcessCount) {
+                        statusBadge = '<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-green-100 text-green-700">完了</span>';
+                    } else if (checkedCount > 0) {
+                        statusBadge = `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-100 text-amber-700">準備中 (${checkedCount}/${activeProcessCount})</span>`;
+                    }
+
+                    const testNumberText = item.test_number !== "なし" && item.test_number ? `小テスト #${item.test_number}` : "小テスト なし";
+                    const testBadgeColor = item.test_number !== "なし" && item.test_number ? "bg-rose-50 text-rose-600 border border-rose-100" : "bg-gray-100 text-gray-400";
+                    const taskBadge = item.task_name ? `<span class="inline-flex px-1.5 py-0.5 text-[9px] font-bold rounded bg-indigo-50 text-indigo-600 border border-indigo-100 items-center gap-1 mt-0.5"><i data-lucide="clipboard" class="w-2.5 h-2.5"></i>${item.task_name}</span>` : "";
+
+                    headerHTML += `
+                        <div class="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm card-item" data-title="${item.title}" data-testnumber="${item.test_number}" data-taskname="${item.task_name || ''}">
+                            <!-- 子アコーディオン：ヘッダー（タップで開閉） -->
+                            <div onclick="toggleCardAccordion(event, '${item.id}')" class="p-3 flex justify-between items-center cursor-pointer hover:bg-gray-50/50 select-none">
+                                <div class="flex-grow pr-2">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-[10px] font-bold text-gray-400">No. ${item.id}</span>
+                                        ${statusBadge}
+                                    </div>
+                                    <h4 class="text-xs font-bold text-gray-800 leading-tight">${item.title}</h4>
+                                    ${taskBadge}
+                                </div>
+                                <div class="flex items-center gap-2 flex-shrink-0">
+                                    <span class="px-1.5 py-0.5 text-[9px] font-bold rounded-md ${testBadgeColor}">${testNumberText}</span>
+                                    <i id="card-icon-${item.id}" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-200" style="${isCardOpen ? 'transform: rotate(180deg);' : ''}"></i>
+                                </div>
+                            </div>
+
+                            <!-- 子アコーディオン：開閉するチェックボックス部 -->
+                            <div id="card-content-${item.id}" class="card-content ${isCardOpen ? 'open' : ''} bg-gray-50/30 border-t border-gray-100/50">
+                                <div class="p-3 space-y-1 text-xs text-gray-600">
+                                    <label onclick="toggleAndSync(event, '${item.id}', 'test_create')" class="flex items-center justify-between p-2 rounded hover:bg-white/80 cursor-pointer select-none">
+                                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-400"></span>小テスト 【作成】</span>
+                                        <input type="checkbox" ${item.test_create ? 'checked' : ''} class="w-4 h-4 text-teal-600 rounded focus:ring-teal-500 pointer-events-none">
+                                    </label>
+                                    <label onclick="toggleAndSync(event, '${item.id}', 'test_print')" class="flex items-center justify-between p-2 rounded hover:bg-white/80 cursor-pointer select-none">
+                                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-orange-400"></span>小テスト 【印刷】</span>
+                                        <input type="checkbox" ${item.test_print ? 'checked' : ''} class="w-4 h-4 text-teal-600 rounded focus:ring-teal-500 pointer-events-none">
+                                    </label>
+                                    <label onclick="toggleAndSync(event, '${item.id}', 'notebook')" class="flex items-center justify-between p-2 rounded hover:bg-white/80 cursor-pointer select-none">
+                                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-indigo-400"></span>ノートをまとめる</span>
+                                        <input type="checkbox" ${item.notebook ? 'checked' : ''} class="w-4 h-4 text-teal-600 rounded focus:ring-teal-500 pointer-events-none">
+                                    </label>
+                                    ${item.task_name ? `
+                                    <label onclick="toggleAndSync(event, '${item.id}', 'task_check')" class="flex items-center justify-between p-2 bg-indigo-50/30 text-indigo-700 rounded hover:bg-indigo-50 cursor-pointer select-none font-medium">
+                                        <span class="flex items-center gap-1"><i data-lucide="clipboard-check" class="w-3.5 h-3.5"></i>提出課題チェック</span>
+                                        <input type="checkbox" ${item.task_check ? 'checked' : ''} class="w-4 h-4 text-indigo-600 rounded border-indigo-300 focus:ring-indigo-500 pointer-events-none">
+                                    </label>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                headerHTML += `</div>`; // 親コンテンツクローズ
+                groupWrapper.innerHTML = headerHTML;
+                container.appendChild(groupWrapper);
             });
 
             updateProgressBar();
             lucide.createIcons();
         }
 
-        function toggleAccordion(id) {
-            const content = document.getElementById(`content-${id}`);
-            const icon = document.getElementById(`icon-${id}`);
-            
-            if (openAccordions.has(id)) {
-                openAccordions.delete(id);
+        // 親：考査範囲の開閉
+        function toggleExamAccordion(examName) {
+            const content = document.getElementById(`exam-content-${examName}`);
+            const icon = document.getElementById(`exam-icon-${examName}`);
+            if (openExams.has(examName)) {
+                openExams.delete(examName);
                 content.classList.remove('open');
                 icon.style.transform = 'rotate(0deg)';
             } else {
-                openAccordions.add(id);
+                openExams.add(examName);
+                content.classList.add('open');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // 子：授業回カードの開閉
+        function toggleCardAccordion(event, id) {
+            event.stopPropagation();
+            const content = document.getElementById(`card-content-${id}`);
+            const icon = document.getElementById(`card-icon-${id}`);
+            if (openCards.has(id)) {
+                openCards.delete(id);
+                content.classList.remove('open');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                openCards.add(id);
                 content.classList.add('open');
                 icon.style.transform = 'rotate(180deg)';
             }
         }
 
         function toggleAndSync(event, itemId, field) {
+            event.preventDefault();
             event.stopPropagation();
             
             const list = sheetData[currentTab];
@@ -540,38 +457,23 @@
             target[field] = newValue;
             renderCards();
 
-            if (isDemoMode) {
-                updateProgressBar();
-                return;
-            }
+            if (isDemoMode) { updateProgressBar(); return; }
 
             toggleLoading(true, "スプレッドシートを更新中...");
-
-            const payload = {
-                sheetName: currentTab,
-                id: itemId,
-                field: field,
-                value: newValue
-            };
+            const payload = { sheetName: currentTab, id: itemId, field: field, value: newValue };
 
             fetch(GAS_API_URL, {
                 method: "POST",
                 mode: "no-cors",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             })
-            .then(() => {
-                toggleLoading(false);
-                updateProgressBar();
-            })
-            .catch(error => {
-                console.error("更新失敗:", error);
+            .then(() => { toggleLoading(false); updateProgressBar(); })
+            .catch(() => {
                 target[field] = oldValue;
                 renderCards();
                 toggleLoading(false);
-                alertMessage("同期に失敗しました。\n電波の良いところで再度お試しください。");
+                alertMessage("同期に失敗しました。");
             });
         }
 
@@ -583,14 +485,38 @@
                 const title = card.dataset.title.toLowerCase();
                 const testNumber = card.dataset.testnumber.toLowerCase();
                 const taskName = card.dataset.taskname.toLowerCase();
-                const examRange = card.dataset.examrange.toLowerCase();
                 
-                if (title.includes(query) || testNumber.includes(query) || taskName.includes(query) || examRange.includes(query)) {
-                    card.style.display = 'flex';
+                if (title.includes(query) || testNumber.includes(query) || taskName.includes(query)) {
+                    card.style.display = 'block';
+                    // 検索一致時は子アコーディオンを自動で展開させて見やすく
+                    if (query !== "") {
+                        const id = card.querySelector('.card-content').id.replace('card-content-', '');
+                        openCards.add(id);
+                    }
                 } else {
                     card.style.display = 'none';
                 }
             });
+
+            const containers = document.querySelectorAll('.exam-group-container');
+            containers.forEach(container => {
+                const visibleCards = container.querySelectorAll('.card-item[style="display: block;"]').length;
+                const examName = container.dataset.exam;
+                
+                if (query === "") {
+                    container.style.display = 'block';
+                    container.querySelectorAll('.card-item').forEach(c => c.style.display = 'block');
+                } else if (visibleCards > 0) {
+                    container.style.display = 'block';
+                    // 検索中、該当する親グループを自動展開
+                    openExams.add(examName);
+                } else {
+                    container.style.display = 'none';
+                }
+            });
+
+            // 表示状態を一元反映
+            renderCards();
         }
     </script>
 </body>
