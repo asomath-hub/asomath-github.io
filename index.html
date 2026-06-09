@@ -37,6 +37,21 @@
             transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1), padding 0.25s ease;
         }
 
+        /* 全体進捗＆検索エリア用の折りたたみアニメーション */
+        .search-progress-content {
+            max-height: 200px; /* 展開時の最大高さの目安 */
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease, opacity 0.2s ease;
+            opacity: 1;
+        }
+        .search-progress-content.collapsed {
+            max-height: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            opacity: 0;
+            pointer-events: none;
+        }
+
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -66,7 +81,7 @@
             <p class="text-base font-medium text-teal-700" id="loading-text">スプレッドシートと同期中...</p>
         </div>
 
-        <!-- ヘッダー（太字を抑えてすっきり大きく） -->
+        <!-- ヘッダー -->
         <div class="bg-gradient-to-r from-teal-600 to-emerald-600 text-white p-4 shadow-md flex-shrink-0">
             <div class="flex justify-between items-center mb-1.5">
                 <h1 class="text-xl font-bold flex items-center gap-2">
@@ -89,8 +104,17 @@
             <button onclick="switchTab('基礎数')" id="tab-基礎数" class="tab-btn px-4.5 py-1.5 rounded-full text-sm font-semibold transition bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 whitespace-nowrap">基礎数</button>
         </div>
 
-        <!-- 検索 ＆ 進捗メーター -->
-        <div class="p-3 bg-white border-b border-gray-100 flex-shrink-0">
+        <!-- 進捗・検索トグルバー（新設） -->
+        <div onclick="toggleSearchProgress()" class="bg-teal-50/60 border-b border-gray-200 px-4 py-1.5 flex justify-between items-center cursor-pointer select-none text-xs text-teal-800 hover:bg-teal-100/40 active:bg-teal-100/60 transition flex-shrink-0">
+            <span class="flex items-center gap-1.5 font-semibold">
+                <i data-lucide="sliders" class="w-3.5 h-3.5 text-teal-600"></i>
+                <span id="toggle-sp-text">進捗と検索を隠す</span>
+            </span>
+            <i id="toggle-sp-icon" data-lucide="chevron-up" class="w-4 h-4 text-teal-600 transition-transform duration-200"></i>
+        </div>
+
+        <!-- 検索 ＆ 進捗メーター（折りたたみ対応コンテナ） -->
+        <div id="search-progress-area" class="search-progress-content bg-white border-b border-gray-100 p-3 flex-shrink-0">
             <div class="mb-3">
                 <div class="flex justify-between text-xs text-gray-500 mb-1">
                     <span class="font-medium">選択中の教科の全体進捗</span>
@@ -180,11 +204,31 @@
         // 状態管理
         const openExams = new Set(["1中間", "1期末", "2中間", "2期末", "学年末"]); // 展開中の考査範囲（親）
         const openCards = new Set(); // 展開中の授業回カード（子）
+        let isSearchProgressOpen = true; // 進捗＆検索エリアが開いているか
 
         window.onload = function() {
             lucide.createIcons();
             if (GAS_API_URL) { reloadData(); } else { setupDemoMode(); }
         };
+
+        // 進捗・検索コンテナの折りたたみ切り替え関数（新設）
+        function toggleSearchProgress() {
+            const container = document.getElementById('search-progress-area');
+            const icon = document.getElementById('toggle-sp-icon');
+            const text = document.getElementById('toggle-sp-text');
+
+            if (isSearchProgressOpen) {
+                isSearchProgressOpen = false;
+                container.classList.add('collapsed');
+                icon.style.transform = 'rotate(180deg)';
+                text.innerText = '進捗と検索を表示する';
+            } else {
+                isSearchProgressOpen = true;
+                container.classList.remove('collapsed');
+                icon.style.transform = 'rotate(0deg)';
+                text.innerText = '進捗と検索を隠す';
+            }
+        }
 
         // デモ環境初期化
         function setupDemoMode() {
